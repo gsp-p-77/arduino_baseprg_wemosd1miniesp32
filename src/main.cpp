@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "./alive/alive.h"
+#include <./wifiM/wifiM.h>
 
 /*
   Init system timer variable for task scheduler
@@ -25,7 +26,7 @@ void setup() {
   }
   
   Serial.println("Starting ESP32...");
-
+  wifiM_init();
   
   ALIVE_init();
 
