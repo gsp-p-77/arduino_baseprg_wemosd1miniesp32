@@ -9,14 +9,17 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "./alive/alive.h"
-#include <./wifiM/wifiM.h>
+#include <./mqttWiFiDemoApp/mqttWiFiDemoApp.h>
+
+#include <WiFi.h>
 
 /*
   Init system timer variable for task scheduler
 */
 uint64_t gSystemTimer1msLastSnapshot = millis();
 
-
+/* To enable debug outputs*/
+#define PRINTF_DEBUG_OUTPUT_ENABLED
 
 void setup() {
   Serial.begin(115200);
@@ -26,7 +29,8 @@ void setup() {
   }
   
   Serial.println("Starting ESP32...");
-  wifiM_init();
+
+  mqttWiFiDemoApp_init();
   
   ALIVE_init();
 
@@ -40,12 +44,13 @@ void TASK_10ms_idx0(void)
 void TASK_100ms_idx1(void)
 {
   static uint8_t cnt_cycle = 0;
-
+#ifdef PRINTF_DEBUG_OUTPUT_ENABLED  
   printf("TASK_100ms: Count %d\n",cnt_cycle);
+#endif  
   cnt_cycle++;
 
-  ALIVE_10msTask();
-
+  mqttWiFiDemoApp_cyclicTask100ms();  
+  ALIVE_CyclicTask();
 }
 
 typedef struct 
@@ -80,15 +85,16 @@ void TASK_profile_end_hook(TASK_profile_data_t * pProfileData)
 void TASK_1000ms_idx2(void)
 {
   static uint8_t cnt_cycle = 0;
-  
+#ifdef PRINTF_DEBUG_OUTPUT_ENABLED  
   printf("TASK_1000ms: Count %d\n",cnt_cycle);
+#endif
   cnt_cycle++;
 }
 
 
 void TASK_Background_idx3(void)
 {
-
+  mqttWiFiDemoApp_backGroundTask();  
 }
 
 
@@ -121,8 +127,10 @@ void loop() {
   {
     TASK_1000ms_idx2();
 
+    #ifdef PRINTF_DEBUG_OUTPUT_ENABLED     
     printf("All task max time took %lu microseconds\n", task_profile_data.task_time_max_micros);
-    printf("All task avg time took %lu microseconds\n", task_profile_data.task_time_avg_micros);    
+    printf("All task avg time took %lu microseconds\n", task_profile_data.task_time_avg_micros);
+    #endif
   }
   
   TASK_profile_end_hook(&task_profile_data);
