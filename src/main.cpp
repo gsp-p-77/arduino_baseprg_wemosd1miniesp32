@@ -19,7 +19,7 @@
 uint64_t gSystemTimer1msLastSnapshot = millis();
 
 /* To enable debug outputs*/
-#define PRINTF_DEBUG_OUTPUT_ENABLED
+//#define PRINTF_DEBUG_OUTPUT_ENABLED
 
 void setup() {
   Serial.begin(115200);

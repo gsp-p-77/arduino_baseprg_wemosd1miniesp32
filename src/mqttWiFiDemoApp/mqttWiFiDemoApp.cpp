@@ -59,7 +59,7 @@ static void callback(char *topic, byte *message, unsigned int length)
   else if (String(topic) == "ledState")
   {
     Serial.println(messageTemp);
-    ALIVE_Disable(50);
+    ALIVE_DisableCycles(50);
     
     if (messageTemp == "on")
     {      
@@ -68,6 +68,14 @@ static void callback(char *topic, byte *message, unsigned int length)
     else if (messageTemp == "off")
     {
       digitalWrite(ledPin, LOW);      
+    }
+    else if (messageTemp == "toggle_on")
+    {
+      ALIVE_RequestActive(true);
+    }
+    else if (messageTemp == "toggle_off")
+    {
+      ALIVE_RequestActive(false);
     }
   }
 }
